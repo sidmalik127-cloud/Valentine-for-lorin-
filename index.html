@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>For Lorin 🧸💖</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Comic Sans MS", "Segoe UI", sans-serif;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 22px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      max-width: 420px;
+      z-index: 10;
+      position: relative;
+    }
+
+    h1 {
+      color: #ff4d6d;
+      margin-bottom: 15px;
+    }
+
+    .no-message {
+      color: #ff4d6d;
+      font-size: 18px;
+      margin-bottom: 10px;
+      min-height: 24px;
+    }
+
+    .buttons {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    #yesBtn {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    #noBtn {
+      background-color: #ccc;
+      color: #333;
+      position: absolute;
+      right: -120px;
+    }
+
+    .message {
+      font-size: 22px;
+      color: #ff4d6d;
+      display: none;
+      min-height: 120px;
+    }
+
+    /* Bears */
+    .bears {
+      font-size: 48px;
+      margin-top: 15px;
+      animation: bounce 1.8s infinite;
+      transition: transform 0.6s ease;
+    }
+
+    .bears.hug {
+      transform: scale(1.2);
+      animation: none;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Hearts */
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 24px;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      to {
+        transform: translateY(120vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Music -->
+  <audio id="music" autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_9c6d1fa6c2.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+    <h1 id="question">Lorin 💕<br>Will you be my Valentine?</h1>
+
+    <div class="no-message" id="noMessage"></div>
+
+    <div class="buttons" id="buttons">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="bears" id="bears">🐻🤎🐻</div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const question = document.getElementById("question");
+    const buttons = document.getElementById("buttons");
+    const message = document.getElementById("message");
+    const bears = document.getElementById("bears");
+    const noMessageDiv = document.getElementById("noMessage");
+
+    let scale = 1;
+    let noClickCount = 0;
+
+    const noMessages = [
+      "Are you sure? 🥺",
+      "Come onnnn 😭",
+      "That YES looks nice 👀💖",
+      "You can’t escape destiny 😈💘"
+    ];
+
+    const finalText =
+`YAYYY!!! 💕🥰
+
+I am so lucky to have you 💖
+and I love that cute little nose of yours,
+that pretty face,
+and that cute personality 🧸💕`;
+
+    // NO click behavior
+    noBtn.addEventListener("click", () => {
+      scale += 0.25;
+      yesBtn.style.transform = `scale(${scale})`;
+
+      noMessageDiv.textContent =
+        noMessages[noClickCount % noMessages.length];
+
+      noClickCount++;
+    });
+
+    // NO runs away
+    noBtn.addEventListener("mouseover", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    function moveNo() {
+      const x = Math.random() * 220 - 110;
+      const y = Math.random() * 180 - 90;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // YES clicked
+    yesBtn.addEventListener("click", () => {
+      question.style.display = "none";
+      buttons.style.display = "none";
+      noMessageDiv.style.display = "none";
+      message.style.display = "block";
+      bears.classList.add("hug");
+
+      typeText(finalText);
+      launchConfetti();
+    });
+
+    // Typing effect
+    function typeText(text) {
+      let i = 0;
+      message.innerHTML = "";
+      const interval = setInterval(() => {
+        message.innerHTML += text[i] === "\n" ? "<br>" : text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 40);
+    }
+
+    // Hearts
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(createHeart, 400);
+
+    // Confetti
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background =
+          `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.animationDuration =
+          (2 + Math.random() * 2) + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    }
+  </script>
+
+</body>
+</html>
